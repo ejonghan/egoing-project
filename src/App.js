@@ -9,6 +9,7 @@ import "./App.css";
 class App extends Component {
   constructor(props) {
     super(props);
+    this.max_id_num = 3;
     this.state = {
       mode: "welcome",
       selected_content_id: 2,
@@ -41,7 +42,21 @@ class App extends Component {
         i = i + 1;
       }
     } else if (this.state.mode === "create") {
-      _article = <CreateContent />;
+      _article = (
+        <CreateContent
+          onSubmit={function (_title, _desc) {
+            this.max_id_num += 1;
+            let _content = this.state.contents.concat({
+              id: this.max_id_num,
+              title: _title,
+              desc: _desc,
+            });
+            this.setState({
+              contents: _content,
+            });
+          }.bind(this)}
+        />
+      );
     }
     return (
       <div className="App">
