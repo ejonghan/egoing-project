@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import TOC from "./components/TOC";
 import ReadContent from "./components/ReadContent";
 import CreateContent from "./components/CreateContent";
+import UpdateContent from "./components/UpdateContent";
 import Subject from "./components/Subject";
 import Control from "./components/Control";
 import "./App.css";
@@ -22,7 +23,17 @@ class App extends Component {
       ],
     };
   }
-  render() {
+  getReadContent() {
+    let i = 0;
+    while (i < this.state.contents.length) {
+      let data = this.state.contents[i];
+      if (data.id === this.state.selected_content_id) {
+        return data;
+      }
+      i = i + 1;
+    }
+  }
+  getContent() {
     let _title,
       _desc,
       _article = null;
@@ -31,16 +42,8 @@ class App extends Component {
       _desc = this.state.welcome.desc;
       _article = <ReadContent title={_title} desc={_desc} />;
     } else if (this.state.mode === "read") {
-      let i = 0;
-      while (i < this.state.contents.length) {
-        let data = this.state.contents[i];
-        if (data.id === this.state.selected_content_id) {
-          _title = data.title;
-          _desc = data.desc;
-          _article = <ReadContent title={_title} desc={_desc} />;
-        }
-        i = i + 1;
-      }
+      let _content = this.getReadContent();
+      _article = <ReadContent title={_content.title} desc={_content.desc} />;
     } else if (this.state.mode === "create") {
       _article = (
         <CreateContent
@@ -57,7 +60,28 @@ class App extends Component {
           }.bind(this)}
         />
       );
+    } else if (this.state.mode === "update") {
+      let _content = this.getReadContent;
+      _article = (
+        <UpdateContent
+          data={_content}
+          onSubmit={function (_title, _desc) {
+            this.max_id_num += 1;
+            let _content = this.state.contents.concat({
+              id: this.max_id_num,
+              title: _title,
+              desc: _desc,
+            });
+            this.setState({
+              contents: _content,
+            });
+          }.bind(this)}
+        />
+      );
     }
+    return _article;
+  }
+  render() {
     return (
       <div className="App">
         <Subject
@@ -85,7 +109,7 @@ class App extends Component {
             });
           }.bind(this)}
         />
-        {_article}
+        {this.getContent()}
       </div>
     );
   }
