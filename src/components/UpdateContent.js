@@ -1,6 +1,20 @@
 import React, { Component } from "react";
 
 class UpdateContent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: this.props.data.title,
+      desc: this.props.data.desc,
+      id: this.props.data.id,
+    };
+    this.inputFormHandler = this.inputFormHandler.bind(this);
+  }
+  inputFormHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  }
   render() {
     return (
       <article>
@@ -10,14 +24,29 @@ class UpdateContent extends Component {
           method="post"
           onSubmit={function (e) {
             e.preventDefault();
-            this.props.onSubmit(e.target.title.value, e.target.desc.value);
+            this.props.onSubmit(
+              this.state.id,
+              this.state.title,
+              this.state.desc
+            );
           }.bind(this)}
         >
           <p>
-            <input type="text" name="title" placeholder="title" />
+            <input
+              type="text"
+              name="title"
+              placeholder="title"
+              value={this.state.title}
+              onChange={this.inputFormHandler}
+            />
           </p>
           <p>
-            <textarea name="desc" placeholder="description" />
+            <textarea
+              name="desc"
+              placeholder="description"
+              value={this.state.desc}
+              onChange={this.inputFormHandler}
+            />
           </p>
           <p>
             <input type="submit" />

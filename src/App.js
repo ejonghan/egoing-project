@@ -49,31 +49,38 @@ class App extends Component {
         <CreateContent
           onSubmit={function (_title, _desc) {
             this.max_id_num += 1;
-            let _content = this.state.contents.concat({
+            let _contents = Array.from(this.state.contents);
+            _contents.push({
               id: this.max_id_num,
               title: _title,
               desc: _desc,
             });
             this.setState({
-              contents: _content,
+              contents: _contents,
+              mode: "read",
+              selected_content_id: this.max_id_num,
             });
           }.bind(this)}
         />
       );
     } else if (this.state.mode === "update") {
-      let _content = this.getReadContent;
+      let _content = this.getReadContent();
       _article = (
         <UpdateContent
           data={_content}
-          onSubmit={function (_title, _desc) {
-            this.max_id_num += 1;
-            let _content = this.state.contents.concat({
-              id: this.max_id_num,
-              title: _title,
-              desc: _desc,
-            });
+          onSubmit={function (_id, _title, _desc) {
+            let _contents = Array.from(this.state.contents);
+            let i = 0;
+            while (i < _contents.length) {
+              if (_contents[i].id === _id) {
+                _contents[i] = { id: _id, title: _title, desc: _desc };
+                break;
+              }
+              i += 1;
+            }
             this.setState({
-              contents: _content,
+              contents: _contents,
+              mode: "read",
             });
           }.bind(this)}
         />
